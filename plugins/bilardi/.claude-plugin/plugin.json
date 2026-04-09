@@ -1,0 +1,10 @@
+{
+  "name": "bilardi",
+  "description": "Personal skills for Claude Code - draw.io architecture diagrams, and more.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Alessandra Bilardi"
+  },
+  "repository": "https://github.com/bilardi/publish-claude-plugins",
+  "license": "MIT"
+}
