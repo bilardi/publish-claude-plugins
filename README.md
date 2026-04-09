@@ -26,10 +26,16 @@ Successfully added marketplace: publish-claude-plugins
 ✓ Installed bilardi. Run /reload-plugins to activate.
 ```
 
-### 3. Activate
+### 3. Reload plugin from local cache
 
 ```
 /reload-plugins
+```
+
+### 4. Update plugin after a push
+
+```
+/plugin update bilardi@publish-claude-plugins
 ```
 
 ## Skills
