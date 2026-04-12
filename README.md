@@ -34,10 +34,22 @@ Successfully added marketplace: publish-claude-plugins
 
 ### 4. Update plugin after a push
 
+Option A: from the Claude Code TUI
+
 ```
 /plugin update bilardi@publish-claude-plugins
 ```
 
+Navigate to the **Installed** tab, select the plugin, and update it.
+
+Option B: from the shell (outside Claude Code)
+
+```sh
+claude plugin update bilardi@publish-claude-plugins
+```
+
+Then inside Claude Code run `/reload-plugins` to activate the updated version.
+
 ## Skills
 
-- **drawio-architecture** - generate a draw.io architecture diagram with AWS icons from Terraform code
+- **drawio-architecture** - generate a draw.io architecture diagram by analyzing the project code, infrastructure files, and existing diagrams
