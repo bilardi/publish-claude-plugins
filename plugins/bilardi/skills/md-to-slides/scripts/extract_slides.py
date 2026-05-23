@@ -54,6 +54,7 @@ def find_markers(prs):
 
 
 def detect_type(slide):
+    from pptx.enum.shapes import MSO_SHAPE_TYPE
     layout = slide.slide_layout.name
     has_bg = slide.element.find(f"{{{P_NS}}}cSld/{{{P_NS}}}bg") is not None
     if layout == "TITLE":
@@ -68,6 +69,12 @@ def detect_type(slide):
                 return 4
     if layout == "BIG_NUMBER":
         return 2
+    if layout == "TITLE_ONLY_1":
+        for shape in slide.shapes:
+            if shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+                return 8
+            if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+                return 7
     return None
 
 
@@ -172,6 +179,26 @@ def extract(prs):
                     rendered = render_list_item(p)
                     if rendered is not None:
                         lines.append(rendered)
+        elif typ == 7:
+            # original image path is not stored in the .pptx; emit placeholder
+            lines.append("### image")
+            lines.append("images/?.png  # TODO: set actual path")
+        elif typ == 8:
+            from pptx.enum.shapes import MSO_SHAPE_TYPE
+            for shape in slide.shapes:
+                if shape.shape_type != MSO_SHAPE_TYPE.TABLE:
+                    continue
+                tbl = shape.table
+                rows = []
+                for row in tbl.rows:
+                    rows.append([cell.text_frame.text for cell in row.cells])
+                if rows:
+                    lines.append("### table")
+                    lines.append("| " + " | ".join(rows[0]) + " |")
+                    lines.append("|" + "|".join(["---"] * len(rows[0])) + "|")
+                    for row in rows[1:]:
+                        lines.append("| " + " | ".join(row) + " |")
+                break
         lines.append("")
     return "\n".join(lines) + "\n"
 
