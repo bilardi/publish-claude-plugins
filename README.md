@@ -54,3 +54,4 @@ Then inside Claude Code run `/reload-plugins` to activate the updated version.
 
 - **drawio-architecture** - generate a draw.io architecture diagram by analyzing the project code, infrastructure files, and existing diagrams
 - **mermaid-png** - replace mermaid code blocks in markdown files with PNG images via mermaid.live
+- **md-to-slides** - build a `.pptx` workshop deck from a Markdown source via a Python script that clones template slides and substitutes text, lists, code, tables, and images
