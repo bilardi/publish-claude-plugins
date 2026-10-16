@@ -538,12 +538,32 @@ def _format_run(run, color):
     run.font.color.rgb = color
 
 
+def set_notes(slide, data):
+    """Write a `### notes` section into the slide's speaker notes."""
+    if not isinstance(data, dict):
+        return
+    if data["kind"] == "list":
+        text = "\n".join(item["text"] for item in data["items"])
+    else:
+        text = data.get("text", "")
+    slide.notes_slide.notes_text_frame.text = text
+
+
+def remove_and_expand(keep, drop):
+    """Remove `drop` and stretch `keep` horizontally over both boxes."""
+    left = min(keep.left, drop.left)
+    right = max(keep.left + keep.width, drop.left + drop.width)
+    keep.left, keep.width = left, right - left
+    drop.element.getparent().remove(drop.element)
+
+
 # ----- per-type content apply -----
 
 def apply_content(slide, slide_def, type7_ref_width=None):
     set_title(slide, slide_def["title"])
     typ = slide_def["type"]
     sections = slide_def.get("sections", {})
+    set_notes(slide, sections.get("notes"))
 
     if typ in (3, 5):
         if isinstance(sections.get("subtitle"), dict):
@@ -563,7 +583,18 @@ def apply_content(slide, slide_def, type7_ref_width=None):
         boxes = get_content_shapes(slide)
         if len(boxes) < 2:
             return
-        for side, box in (("left", boxes[0]), ("right", boxes[1])):
+        left_box, right_box = boxes[0], boxes[1]
+        has_left = isinstance(sections.get("left"), dict)
+        has_right = isinstance(sections.get("right"), dict)
+        if has_left and not has_right:
+            remove_and_expand(left_box, right_box)
+            right_box = None
+        elif has_right and not has_left:
+            remove_and_expand(right_box, left_box)
+            left_box = None
+        for side, box in (("left", left_box), ("right", right_box)):
+            if box is None:
+                continue
             data = sections.get(side)
             if not isinstance(data, dict):
                 continue

@@ -134,6 +134,28 @@ $ python assegnazione.py
 ```
 ````
 
+One-sided slides (type 4 and type 6): give only `### left` or only `### right` and the other box is removed, so the remaining one spans the full width. A `type:4` with only `### left` is a full-width list; a `type:6` with only `### left` is a full-width code slide. With neither section, the template content is kept.
+
+```markdown
+## type:4 Lezioni
+### left
+- Prima lezione
+- Seconda lezione
+```
+
+Speaker notes (any type): a `### notes` section is written to the slide's speaker notes. Plain lines are joined with line breaks; list items become one line each.
+
+```markdown
+## type:4 Lezioni
+### left
+- Prima lezione
+### notes
+Dire questo con calma.
+Poi passare alla demo.
+```
+
+`extract_slides.py` reads both back: speaker notes become a `### notes` section, and a one-sided slide comes back as `type:4` (list) or `type:6` (code) with only `### left`.
+
 ### Inline syntax in lists
 
 - `**text**` : bold (use for the active item)

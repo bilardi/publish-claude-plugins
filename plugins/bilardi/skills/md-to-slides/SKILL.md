@@ -54,6 +54,8 @@ The `.pptx` must guarantee, otherwise the script fails or produces wrong output:
 |------|---|
 | New slide type N | template at slide N + `config.TYPE_TO_TEMPLATE` + `apply_content` case (if custom) + `README.md` |
 | New MD section name (e.g. `### caption`) | `parse_md` + relevant `apply_content` branch |
+| Speaker notes on a slide | `### notes` section in the MD (any type), handled by `set_notes` |
+| List-only or code-only slide | `type:4` / `type:6` with only `### left` or `### right`; the empty side is removed by `remove_and_expand` |
 | Change font size globally | `config.TEXT_PT` |
 | Change Solarized palette | `config.SOLAR_*` |
 | Add Python keyword | `config.PY_KEYWORDS` / `PY_BUILTINS` |
