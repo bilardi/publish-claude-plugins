@@ -39,6 +39,20 @@ def get_content_shapes(slide):
     return out
 
 
+def slide_notes(slide):
+    if not slide.has_notes_slide:
+        return []
+    text = slide.notes_slide.notes_text_frame.text
+    return [line for line in text.split("\n") if line.strip()]
+
+
+def append_notes(lines, slide):
+    notes = slide_notes(slide)
+    if notes:
+        lines.append("### notes")
+        lines.extend(notes)
+
+
 def find_markers(prs):
     out = []
     for i, slide in enumerate(prs.slides):
@@ -61,6 +75,8 @@ def detect_type(slide):
         return 3 if has_bg else 5
     if layout == "TITLE_AND_BODY":
         boxes = get_content_shapes(slide)
+        if len(boxes) == 1:  # one-sided slide, the other box was removed at build time
+            return 6 if is_code_box(boxes[0]) else 4
         if len(boxes) >= 2:
             l, r = is_code_box(boxes[0]), is_code_box(boxes[1])
             if l and r:
@@ -133,6 +149,7 @@ def extract(prs):
             rendered = render_list_item(p)
             if rendered is not None:
                 lines.append(rendered)
+    append_notes(lines, agenda_slide)
     lines.append("")
 
     for i in range(start_idx + 1, end_idx):
@@ -199,6 +216,7 @@ def extract(prs):
                     for row in rows[1:]:
                         lines.append("| " + " | ".join(row) + " |")
                 break
+        append_notes(lines, slide)
         lines.append("")
     return "\n".join(lines) + "\n"
 
